@@ -1,6 +1,6 @@
 import React from "react";
 
-const FormField = ({ id, name, placeholder, value, label }) => {
+const FormField = ({ id, name, placeholder, value, label , onChange}) => {
   return (
     <div className="flex flex-col mb-2 gap-2">
       <label className="text-lg" htmlFor={id}>{label} :</label>
@@ -10,6 +10,7 @@ const FormField = ({ id, name, placeholder, value, label }) => {
         name={name}
         placeholder={placeholder}
         value={value}
+        onChange={(e) => onChange(e)}
         className="p-1 border border-gray-400 focus:outline-none focus:border-gray-700 rounded-md"
       />
     </div>
