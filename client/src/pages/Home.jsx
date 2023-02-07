@@ -1,38 +1,65 @@
 import React, { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import FormField from "../components/FormField";
 import ItemCard from "../components/ItemCard";
-
-const tasks = [{ key: Math.random() * 10, value: "Adding A New Task" }];
+import _ from "lodash";
 
 const Home = () => {
-  const [task, setTask] = useState({key:'' , value:''});
+  const [task, setTask] = useState("");
+  const [List, setList] = useState([
+    { key: Math.random() * 10, value: "Adding A New Task" },
+  ]);
 
   const onChangeHandler = (e) => {
     let value = e.target.value;
-    setTask({ key:Math.random() * 10 ,value: value });
+    setTask(value);
   };
 
-  const onRemoveHandler = () => {
-    console.log("task removed");
+  const onRemoveHandler = (id) => {
+    console.log(id);
+    const newTasks = List.filter((item) => item.key !== id);
+    setList(newTasks);
   };
 
   const onSubmitHandler = () => {
     event.preventDefault();
-    tasks.push(task);
-    setTask({key:"" , value:''});
+    if (task !== "") {
+      setList([{ key: Math.random() * 10, value: task }, ...List]);
+      toast.success("added successfully", {
+        duration: 700,
+        position: "top-left",
+      });
+      setTask("");
+    } else {
+      toast.error("Add Your Task", {
+        duration: 1000,
+        position: "top-left",
+      });
+    }
   };
 
+  const taskList =
+    List &&
+    List.map((item) => (
+      <ItemCard
+        key={item.key}
+        id={item.key}
+        task={item.value}
+        onRemove={(id) => onRemoveHandler(id)}
+      />
+    ));
+
   return (
-    <div className="flex flex-col items-center justify-center h-[100vh] bg-gray-800 gap-3 ">
+    <div className="flex flex-col items-center justify-start min-h-screen max-h-full bg-gray-800 gap-3 pt-[5rem] pb-5">
       <form
-        className="bg-white px-8 py-4 rounded-md w-96 mt-[-10rem]"
+        className="bg-white px-8 py-4 rounded-md w-96 "
         onSubmit={onSubmitHandler}
       >
         <FormField
           id="todo"
           name="todo"
           label="New Task"
-          value={task.value}
+          value={task}
           onChange={(e) => onChangeHandler(e)}
           placeholder="doing something..."
         />
@@ -43,12 +70,8 @@ const Home = () => {
           Add To The List
         </button>
       </form>
-      <div className="bg-white w-96 p-5 rounded-md">
-        {tasks &&
-          tasks.map((item) => (
-            <ItemCard key={item.key} task={item.value} onRemove={onRemoveHandler} />
-          ))}
-      </div>
+      <div className="bg-white w-96 p-5 rounded-md">{taskList}</div>
+      <Toaster />
     </div>
   );
 };
