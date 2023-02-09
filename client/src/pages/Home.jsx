@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import FormField from "../components/FormField";
 import ItemCard from "../components/ItemCard";
@@ -9,6 +9,16 @@ const Home = () => {
   const [List, setList] = useState([
     { key: Math.random() * 10, value: "Adding A New Task" },
   ]);
+  const [x, setx] = useState("")
+
+  useEffect(() => {
+    const fetching =async () => {
+    const response =  fetch("/api" , {method:"GET"})
+    const data = JSON.parse(response.body);
+    console.log(data);
+    }
+     fetching();
+  }, []);
 
   const onChangeHandler = (e) => {
     let value = e.target.value;
@@ -36,6 +46,7 @@ const Home = () => {
         position: "top-left",
       });
     }
+    console.log(x);
   };
 
   const taskList =
