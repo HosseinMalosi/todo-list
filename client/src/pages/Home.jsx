@@ -9,15 +9,17 @@ const Home = () => {
   const [List, setList] = useState([
     { key: Math.random() * 10, value: "Adding A New Task" },
   ]);
-  const [x, setx] = useState("")
+
+  const fetching = async () => {
+    const response = await fetch("http://localhost:8080/api", {
+      method: "GET",
+    });
+    const data =await response.json();
+    console.log(data[0].task);
+  };
 
   useEffect(() => {
-    const fetching =async () => {
-    const response =  fetch("/api" , {method:"GET"})
-    const data = JSON.parse(response.body);
-    console.log(data);
-    }
-     fetching();
+    fetching();
   }, []);
 
   const onChangeHandler = (e) => {
