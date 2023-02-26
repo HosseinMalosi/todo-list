@@ -1,23 +1,20 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {motion} from "framer-motion";
 import {
   CheckCircleIcon as Check,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { Update } from "../utils";
 
-const ItemCard = ({ task, onRemove, id }) => {
+const ItemCard = ({ task, onRemove, id , checked}) => {
+  const [Checked , setChecked] = useState(checked)
   const ref = useRef();
 
   const onClickHandler = (e) => {
-    const div = ref.current;
-    const paragragh = ref.current.childNodes[0];
-    const unCheck = ref.current.childNodes[1];
-    const Checked = ref.current.childNodes[2];
-    unCheck.classList.toggle("hidden");
-    Checked.classList.toggle("hidden");
-    paragragh.classList.toggle("line-through");
-    paragragh.classList.toggle("text-gray-400");
+    if(Checked === false) setChecked(true)
+    else setChecked(false)
+    Update(Checked,"update",id)
   };
 
   return (
@@ -32,13 +29,13 @@ const ItemCard = ({ task, onRemove, id }) => {
         ease: [0.2, 0.71, 0.2, 1.01],
       }}
     >
-      <p >{task}</p>
+      <p className={Checked ? " line-through text-gray-400" : ""}>{task}</p>
       <Check
-        className=" absolute right-1 top-3 w-6 uncheck cursor-pointer"
+        className={` absolute right-1 top-3 w-6 uncheck cursor-pointer ${Checked ? "hidden" : ""}`}
         onClick={(e) => onClickHandler(e)}
       />
       <CheckCircleIcon
-        className=" absolute right-1 top-3 w-6 checked hidden cursor-pointer"
+        className={`absolute right-1 top-3 w-6 checked ${!Checked ? "hidden" : ""} cursor-pointer`}
         onClick={(e) => onClickHandler(e)}
       />
       <TrashIcon

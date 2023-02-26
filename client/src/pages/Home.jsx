@@ -1,36 +1,27 @@
-import React, { useEffect, useState, use } from "react";
+import React, { useEffect, useState} from "react";
 import toast, { Toaster } from "react-hot-toast";
 import FormField from "../components/FormField";
 import ItemCard from "../components/ItemCard";
-import { fetching ,sendData} from "../utils";
-import _ from "lodash";
+import { deleteHandler, fetching, sendData } from "../utils";
 
 const Home = () => {
-  const [task, setTask] = useState("dasdw");
-  const [List, setList] = useState([{ key: 12, value: "mamad ro bokhorim" }]);
-
-  useEffect(() => {
-    fetching()
-  }, [fetching]);
+  const [task, setTask] = useState("");
+  const [List, setList] = useState([]);
 
   const onChangeHandler = (e) => {
     let value = e.target.value;
     setTask(value);
   };
 
-  const onRemoveHandler = (id) => {
-    const newTasks = List.filter((item) => item.key !== id);
-    setList(newTasks);
+  const onRemoveHandler = async (id) => {
+    deleteHandler(id);
   };
 
-
-  
   const onSubmitHandler = () => {
     event.preventDefault();
 
     if (task !== "") {
       sendData(task);
-      console.log(task);
       toast.success("added successfully", {
         duration: 700,
         position: "top-left",
@@ -43,6 +34,13 @@ const Home = () => {
       });
     }
   };
+
+  useEffect(() => {
+    const data = fetching();
+    data.then((data) => {
+      setList(data);
+    });
+  }, [onRemoveHandler, onChangeHandler, fetching]);
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen max-h-full bg-gray-800 gap-3 pt-[5rem] pb-5">
@@ -66,15 +64,16 @@ const Home = () => {
         </button>
       </form>
       <div className="bg-white w-96 p-5 rounded-md">
-        {List &&
+        {(List.length > 0 &&
           List.map((item) => (
             <ItemCard
-              key={item.key}
-              id={item.key}
-              task={item.value}
+              key={item._id}
+              id={item._id}
+              task={item.task}
               onRemove={(id) => onRemoveHandler(id)}
+              checked={item.checked}
             />
-          ))}
+          ))) || <h1>Your List Is Empty</h1>}
       </div>
       <Toaster />
     </div>
